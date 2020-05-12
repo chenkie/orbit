@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Card from '../components/common/Card';
@@ -8,9 +8,6 @@ import FormInput from './../components/FormInput';
 import FormSuccess from './../components/FormSuccess';
 import FormError from './../components/FormError';
 import GradientBar from './../components/common/GradientBar';
-import { AuthContext } from '../context/AuthContext';
-import { publicFetch } from './../util/fetch';
-import { Redirect } from 'react-router-dom';
 import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
 
@@ -20,23 +17,13 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const authContext = useContext(AuthContext);
   const [loginSuccess, setLoginSuccess] = useState();
   const [loginError, setLoginError] = useState();
-  const [redirectOnLogin, setRedirectOnLogin] = useState(
-    false
-  );
   const [loginLoading, setLoginLoading] = useState(false);
 
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
-
-      // TODO: make a publicFetch.post call
-      // to the `authenticate` endpoint.
-      // Use authContext to set the auth state
-      // on success.
-      // Redirect to the dashboard on success
     } catch (error) {
       setLoginLoading(false);
       const { data } = error.response;
