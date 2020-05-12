@@ -9,11 +9,18 @@ const FetchProvider = ({ children }) => {
   const authContext = useContext(AuthContext);
 
   const authAxios = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
-    headers: {
-      Authorization: `Bearer ${authContext.authState.token}`
-    }
+    baseURL: process.env.REACT_APP_API_URL
   });
+
+  authAxios.interceptors.request.use(
+    config => {
+      config.headers.Authorization = `Bearer ${authContext.authState.token}`;
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
 
   authAxios.interceptors.response.use(
     response => {
