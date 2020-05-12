@@ -27,9 +27,9 @@ const Home = () => {
             </Link>
             <GradientLink
               to={
-                auth.isAuthenticated()
-                  ? '/dashboard'
-                  : '/login'
+                // TODO: if the user is authenticated, send them
+                // to the dashboard. Otherwise, send them to login
+                '/login'
               }
               text="Log In"
             />
@@ -57,9 +57,9 @@ const Home = () => {
                 text="Get Started"
                 size="lg"
                 to={
-                  auth.isAuthenticated()
-                    ? '/dashboard'
-                    : '/login'
+                  // TODO: if the user is authenticated, send them
+                  // to the dashboard. Otherwise, send them to login
+                  '/dashboard'
                 }
               />
             </div>
