@@ -29,23 +29,10 @@ const FetchProvider = ({ children }) => {
     }
   );
 
-  const authGet = route => authAxios.get(`/${route}`);
-
-  const authPost = (route, payload) =>
-    authAxios.post(route, payload);
-
-  const authPatch = (route, payload) =>
-    authAxios.patch(route, payload);
-
-  const authDelete = route => authAxios.delete(route);
-
   return (
     <Provider
       value={{
-        authGet,
-        authPost,
-        authPatch,
-        authDelete
+        authAxios
       }}
     >
       {children}
