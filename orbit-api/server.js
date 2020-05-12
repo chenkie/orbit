@@ -203,7 +203,10 @@ app.get(
   requireAdmin,
   async (req, res) => {
     try {
-      const inventoryItems = await InventoryItem.find();
+      const user = req.user.sub;
+      const inventoryItems = await InventoryItem.find({
+        user
+      });
       res.json(inventoryItems);
     } catch (err) {
       return res.status(400).json({ error: err });
