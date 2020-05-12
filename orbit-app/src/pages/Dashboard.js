@@ -22,7 +22,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getDashboardData = async () => {
       try {
-        const { data } = await fetchContext.authGet(
+        const { data } = await fetchContext.authAxios.get(
           'dashboard-data'
         );
         setDashboardData(data);
