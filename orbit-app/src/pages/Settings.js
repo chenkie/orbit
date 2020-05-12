@@ -29,7 +29,7 @@ const Settings = () => {
       }
     };
     getBio();
-  }, [fetch]);
+  }, [fetchContext.authAxios]);
 
   const saveBio = async bio => {
     try {
