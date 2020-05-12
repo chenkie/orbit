@@ -46,13 +46,15 @@ const UserDetail = ({ user }) => (
 );
 
 const Users = () => {
-  const fetch = useContext(FetchContext);
+  const fetchContext = useContext(FetchContext);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const { data } = await fetch.authGet('users');
+        const { data } = await fetchContext.authAxios.get(
+          'users'
+        );
         setUsers(data.users);
       } catch (err) {
         console.log(err);

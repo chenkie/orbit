@@ -62,7 +62,7 @@ const NewInventoryItem = ({ onSubmit }) => {
 };
 
 const Inventory = () => {
-  const fetch = useContext(FetchContext);
+  const fetchContext = useContext(FetchContext);
   const [inventory, setInventory] = useState([]);
   const [successMessage, setSuccessMessage] = useState();
   const [errorMessage, setErrorMessage] = useState();
@@ -70,7 +70,9 @@ const Inventory = () => {
   useEffect(() => {
     const getInventory = async () => {
       try {
-        const { data } = await fetch.authGet('inventory');
+        const { data } = await fetchContext.authAxios.get(
+          'inventory'
+        );
         setInventory(data);
       } catch (err) {
         console.log('the err', err);
@@ -78,11 +80,11 @@ const Inventory = () => {
     };
 
     getInventory();
-  }, [fetch]);
+  }, [fetchContext]);
 
   const onSubmit = async (values, resetForm) => {
     try {
-      const { data } = await fetch.authPost(
+      const { data } = await fetchContext.authAxios.post(
         'inventory',
         values
       );
@@ -104,7 +106,9 @@ const Inventory = () => {
           'Are you sure you want to delete this item?'
         )
       ) {
-        const { data } = await fetch.authDelete(
+        const {
+          data
+        } = await fetchContext.authAxios.delete(
           `inventory/${item._id}`
         );
         setInventory(
