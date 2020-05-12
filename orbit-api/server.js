@@ -197,8 +197,6 @@ app.patch('/api/user-role', async (req, res) => {
   }
 });
 
-// TODO: make sure this route is protected and
-// is scoped to admin users
 app.get('/api/inventory', async (req, res) => {
   try {
     const inventoryItems = await InventoryItem.find();
@@ -207,8 +205,7 @@ app.get('/api/inventory', async (req, res) => {
     return res.status(400).json({ error: err });
   }
 });
-// TODO: make sure this route is protected and
-// is scoped to admin users
+
 app.post('/api/inventory', async (req, res) => {
   try {
     const inventoryItem = new InventoryItem(req.body);
@@ -224,8 +221,7 @@ app.post('/api/inventory', async (req, res) => {
     });
   }
 });
-// TODO: make sure this route is protected and
-// is scoped to admin users
+
 app.delete('/api/inventory/:id', async (req, res) => {
   try {
     const deletedItem = await InventoryItem.findOneAndDelete(
