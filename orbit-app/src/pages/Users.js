@@ -61,7 +61,7 @@ const Users = () => {
       }
     };
     getUsers();
-  }, [fetch]);
+  }, [fetchContext.authAxios]);
 
   return (
     <>
