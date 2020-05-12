@@ -201,6 +201,9 @@ app.patch('/api/user-role', async (req, res) => {
 // is scoped to admin users
 app.get('/api/inventory', async (req, res) => {
   try {
+    // TODO
+    // Get the user ID from the JWT `sub` claim
+    // and use it in the query for invetory items
     const inventoryItems = await InventoryItem.find();
     res.json(inventoryItems);
   } catch (err) {
@@ -211,6 +214,10 @@ app.get('/api/inventory', async (req, res) => {
 // is scoped to admin users
 app.post('/api/inventory', async (req, res) => {
   try {
+    // TODO:
+    // Get the user ID from the JWT `sub` claim
+    // and use it in the input for a new inventory item
+    // Send back the new inventory item in the response
     const inventoryItem = new InventoryItem(req.body);
     await inventoryItem.save();
     res.status(201).json({
@@ -228,6 +235,10 @@ app.post('/api/inventory', async (req, res) => {
 // is scoped to admin users
 app.delete('/api/inventory/:id', async (req, res) => {
   try {
+    // TODO
+    // Get the user ID from the JWT `sub` claim
+    // and use it in the query to delete the
+    // requested inventory item
     const deletedItem = await InventoryItem.findOneAndDelete(
       { _id: req.params.id }
     );
