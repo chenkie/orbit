@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// TODO: make sure the user ID is a required field
 const inventoryItemModel = new Schema({
-  user: { type: mongoose.Types.ObjectId, required: true },
+  user: { type: mongoose.Types.ObjectId, required: false },
   name: { type: String, required: true },
   itemNumber: { type: String, required: true },
   unitPrice: { type: Number, required: true },

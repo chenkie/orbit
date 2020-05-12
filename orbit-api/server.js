@@ -197,64 +197,50 @@ app.patch('/api/user-role', async (req, res) => {
   }
 });
 
-app.get(
-  '/api/inventory',
-  requireAuth,
-  requireAdmin,
-  async (req, res) => {
-    try {
-      const inventoryItems = await InventoryItem.find();
-      res.json(inventoryItems);
-    } catch (err) {
-      return res.status(400).json({ error: err });
-    }
+// TODO: make sure this route is protected and
+// is scoped to admin users
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const inventoryItems = await InventoryItem.find();
+    res.json(inventoryItems);
+  } catch (err) {
+    return res.status(400).json({ error: err });
   }
-);
-
-app.post(
-  '/api/inventory',
-  requireAuth,
-  requireAdmin,
-  async (req, res) => {
-    try {
-      const userId = req.user.sub;
-      const input = Object.assign({}, req.body, {
-        user: userId
-      });
-      const inventoryItem = new InventoryItem(input);
-      await inventoryItem.save();
-      res.status(201).json({
-        message: 'Inventory item created!',
-        inventoryItem
-      });
-    } catch (err) {
-      return res.status(400).json({
-        message: 'There was a problem creating the item'
-      });
-    }
+});
+// TODO: make sure this route is protected and
+// is scoped to admin users
+app.post('/api/inventory', async (req, res) => {
+  try {
+    const inventoryItem = new InventoryItem(req.body);
+    await inventoryItem.save();
+    res.status(201).json({
+      message: 'Inventory item created!',
+      inventoryItem
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: 'There was a problem creating the item'
+    });
   }
-);
-
-app.delete(
-  '/api/inventory/:id',
-  requireAuth,
-  requireAdmin,
-  async (req, res) => {
-    try {
-      const deletedItem = await InventoryItem.findOneAndDelete(
-        { _id: req.params.id, user: req.user.sub }
-      );
-      res.status(201).json({
-        message: 'Inventory item deleted!',
-        deletedItem
-      });
-    } catch (err) {
-      return res.status(400).json({
-        message: 'There was a problem deleting the item.'
-      });
-    }
+});
+// TODO: make sure this route is protected and
+// is scoped to admin users
+app.delete('/api/inventory/:id', async (req, res) => {
+  try {
+    const deletedItem = await InventoryItem.findOneAndDelete(
+      { _id: req.params.id }
+    );
+    res.status(201).json({
+      message: 'Inventory item deleted!',
+      deletedItem
+    });
+  } catch (err) {
+    return res.status(400).json({
+      message: 'There was a problem deleting the item.'
+    });
   }
-);
+});
 
 app.get('/api/users', requireAuth, async (req, res) => {
   try {
