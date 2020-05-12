@@ -155,9 +155,6 @@ const attachUser = (req, res, next) => {
 
 app.use(attachUser);
 
-// TODO: create a middleware for requiring auth
-
-// TODO: apply middleware for requring auth
 app.get('/api/dashboard-data', (req, res) =>
   res.json(dashboardData)
 );
@@ -226,7 +223,6 @@ app.delete('/api/inventory/:id', async (req, res) => {
   }
 });
 
-// TODO: apply middleware for requiring auth
 app.get('/api/users', async (req, res) => {
   try {
     const users = await User.find()
@@ -243,7 +239,6 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-// TODO: apply middleware for requiring auth
 app.get('/api/bio', async (req, res) => {
   try {
     const { sub } = req.user;
@@ -263,7 +258,6 @@ app.get('/api/bio', async (req, res) => {
   }
 });
 
-// TODO: apply middleware for requiring auth
 app.patch('/api/bio', async (req, res) => {
   try {
     const { sub } = req.user;
