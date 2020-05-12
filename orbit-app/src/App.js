@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -20,17 +20,11 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import FourOFour from './pages/FourOFour';
 
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Inventory = lazy(() => import('./pages/Inventory'));
-const Account = lazy(() => import('./pages/Account'));
-const Settings = lazy(() => import('./pages/Settings'));
-const Users = lazy(() => import('./pages/Users'));
-
-const LoadingFallback = () => (
-  <AppShell>
-    <div className="p-4">Loading...</div>
-  </AppShell>
-);
+import Dashboard from './pages/Dashboard';
+import Inventory from './pages/Inventory';
+import Account from './pages/Account';
+import Settings from './pages/Settings';
+import Users from './pages/Users';
 
 const UnauthenticatedRoutes = () => (
   <Switch>
@@ -83,28 +77,24 @@ const AdminRoute = ({ children, ...rest }) => {
 
 const AppRoutes = () => {
   return (
-    <>
-      <Suspense fallback={<LoadingFallback />}>
-        <Switch>
-          <AuthenticatedRoute path="/dashboard">
-            <Dashboard />
-          </AuthenticatedRoute>
-          <AdminRoute path="/inventory">
-            <Inventory />
-          </AdminRoute>
-          <AuthenticatedRoute path="/account">
-            <Account />
-          </AuthenticatedRoute>
-          <AuthenticatedRoute path="/settings">
-            <Settings />
-          </AuthenticatedRoute>
-          <AuthenticatedRoute path="/users">
-            <Users />
-          </AuthenticatedRoute>
-          <UnauthenticatedRoutes />
-        </Switch>
-      </Suspense>
-    </>
+    <Switch>
+      <AuthenticatedRoute path="/dashboard">
+        <Dashboard />
+      </AuthenticatedRoute>
+      <AdminRoute path="/inventory">
+        <Inventory />
+      </AdminRoute>
+      <AuthenticatedRoute path="/account">
+        <Account />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/settings">
+        <Settings />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/users">
+        <Users />
+      </AuthenticatedRoute>
+      <UnauthenticatedRoutes />
+    </Switch>
   );
 };
 
