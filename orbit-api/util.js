@@ -14,7 +14,7 @@ const createToken = user => {
       iss: 'api.orbit',
       aud: 'api.orbit'
     },
-    'secret123',
+    process.env.JWT_SECRET,
     { algorithm: 'HS256', expiresIn: '1h' }
   );
 };
