@@ -160,16 +160,6 @@ const requireAuth = jwt({
   secret: process.env.JWT_SECRET
 });
 
-const requireAdmin = (req, res, next) => {
-  const { role } = req.user;
-  if (role !== 'admin') {
-    return res
-      .status(401)
-      .json({ message: 'Insufficient role' });
-  }
-  next();
-};
-
 app.get('/api/dashboard-data', requireAuth, (req, res) =>
   res.json(dashboardData)
 );
