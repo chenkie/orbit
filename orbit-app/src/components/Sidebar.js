@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,9 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation } from 'react-router-dom';
 import logo from './../images/logo.png';
-import { AuthContext } from './../context/AuthContext';
 
-// TODO: Include a key to define allowed roles
 const navItems = [
   {
     label: 'Dashboard',
@@ -69,9 +67,6 @@ const NavItemContainer = ({ children }) => (
 );
 
 const Sidebar = () => {
-  // TODO: get the auth state and look for the
-  // user's role. Only render the sidebar link
-  // if the user should be allowed to see it
   return (
     <section className="h-screen">
       <div className="w-16 sm:w-24 m-auto">
