@@ -7,10 +7,9 @@ const { Provider } = AuthContext;
 const AuthProvider = ({ children }) => {
   const history = useHistory();
 
-  const token = localStorage.getItem('token') || null;
+  const token = localStorage.getItem('token');
   const userInfo = localStorage.getItem('userInfo');
-  const expiresAt =
-    localStorage.getItem('expiresAt') || null;
+  const expiresAt = localStorage.getItem('expiresAt');
 
   const [authState, setAuthState] = useState({
     token,
@@ -18,40 +17,21 @@ const AuthProvider = ({ children }) => {
     userInfo: userInfo ? JSON.parse(userInfo) : {}
   });
 
-  const setAuthInfo = ({ token, userInfo, expiresAt }) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify(userInfo)
-    );
-    localStorage.setItem('expiresAt', expiresAt);
-
-    setAuthState({
-      token,
-      userInfo,
-      expiresAt
-    });
+  const setAuthInfo = () => {
+    // TODO: Set the auth info in local storage
+    // also authState
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('expiresAt');
-    setAuthState({});
-    history.push('/login');
+    // TODO: Remove auth items from local storage
+    // and reset auth state.
+    // Redirect the user to the login page.
   };
 
   const isAuthenticated = () => {
-    if (!authState.token || !authState.expiresAt) {
-      return false;
-    }
-    return (
-      new Date().getTime() / 1000 < authState.expiresAt
-    );
-  };
-
-  const isAdmin = () => {
-    return authState.userInfo.role === 'admin';
+    // TODO: Compare the token expiry time to the
+    // current time to tell whether or not the user
+    // is authenticated
   };
 
   return (
@@ -60,8 +40,7 @@ const AuthProvider = ({ children }) => {
         authState,
         setAuthState: authInfo => setAuthInfo(authInfo),
         logout,
-        isAuthenticated,
-        isAdmin
+        isAuthenticated
       }}
     >
       {children}

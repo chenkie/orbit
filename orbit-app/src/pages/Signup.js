@@ -37,18 +37,11 @@ const Signup = () => {
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
-      const { data } = await publicFetch.post(
-        `signup`,
-        credentials
-      );
-
-      authContext.setAuthState(data);
-      setSignupSuccess(data.message);
-      setSignupError('');
-
-      setTimeout(() => {
-        setRedirectOnLogin(true);
-      }, 700);
+      // TODO: make a publicFetch.post call
+      // to the `signup` endpoint.
+      // Use authContext to set the auth state
+      // on success.
+      // Redirect to the dashboard on success
     } catch (error) {
       setLoginLoading(false);
       const { data } = error.response;
@@ -59,7 +52,6 @@ const Signup = () => {
 
   return (
     <>
-      {redirectOnLogin && <Redirect to="/dashboard" />}
       <section className="w-1/2 h-screen m-auto p-8 sm:pt-10">
         <GradientBar />
         <Card>
