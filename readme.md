@@ -30,7 +30,7 @@ cd ../orbit-api
 npm install
 ```
 
-## Setup the Environment Files
+## Set Up the Environment Files
 
 The React app contains a file called `.env.local`. This file has a single variable called `REACT_APP_API_URL` which is used to connect to the backend. You can leave this as is.
 
@@ -51,8 +51,10 @@ npm start
 
 The Node API comes with a script in its `package.json` which allows you to run it in development mode with **nodemon**.
 
+Open a new terminal window, change directories into the API, and start it up.
+
 ```bash
-cd ../orbit-api
+cd orbit-api
 npm run dev
 ```
 
