@@ -12,7 +12,7 @@ import FormError from './../components/FormError';
 import FormSuccess from './../components/FormSuccess';
 
 const Settings = () => {
-  const fetch = useContext(FetchContext);
+  const fetchContext = useContext(FetchContext);
   const [bio, setBio] = useState();
   const [successMessage, setSuccessMessage] = useState();
   const [errorMessage, setErrorMessage] = useState();
@@ -20,7 +20,9 @@ const Settings = () => {
   useEffect(() => {
     const getBio = async () => {
       try {
-        const { data } = await fetch.authGet('bio');
+        const { data } = await fetchContext.authAxios.get(
+          'bio'
+        );
         setBio(data.bio);
       } catch (err) {
         console.log(err);
@@ -31,7 +33,10 @@ const Settings = () => {
 
   const saveBio = async bio => {
     try {
-      const { data } = await fetch.authPatch('bio', bio);
+      const { data } = await fetchContext.authAxios.patch(
+        'bio',
+        bio
+      );
       setErrorMessage(null);
       setSuccessMessage(data.message);
     } catch (err) {

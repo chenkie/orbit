@@ -5,16 +5,19 @@ import { FetchContext } from '../context/FetchContext';
 import { AuthContext } from '../context/AuthContext';
 
 const Account = () => {
-  const fetch = useContext(FetchContext);
+  const fetchContext = useContext(FetchContext);
   const auth = useContext(AuthContext);
   const [successMessage, setSuccessMessage] = useState();
   const [errorMessage, setErrorMessage] = useState();
 
   const setUserRole = async role => {
     try {
-      const { data } = await fetch.authPatch('user-role', {
-        role
-      });
+      const { data } = await fetchContext.authAxios.patch(
+        'user-role',
+        {
+          role
+        }
+      );
       setSuccessMessage(data.message);
     } catch (err) {
       setErrorMessage(err.response.data.message);
