@@ -1,43 +1,22 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Switch,
-  Redirect
+  Switch
 } from 'react-router-dom';
 import './App.css';
-
-import {
-  AuthProvider,
-  AuthContext
-} from './context/AuthContext';
-import { FetchProvider } from './context/FetchContext';
-
 import AppShell from './AppShell';
-
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import FourOFour from './pages/FourOFour';
-
-import Dashboard from './pages/Dashboard';
-import Inventory from './pages/Inventory';
+import { AuthProvider } from './context/AuthContext';
+import { FetchProvider } from './context/FetchContext';
 import Account from './pages/Account';
+import Dashboard from './pages/Dashboard';
+import FourOFour from './pages/FourOFour';
+import Home from './pages/Home';
+import Inventory from './pages/Inventory';
+import Login from './pages/Login';
 import Settings from './pages/Settings';
+import Signup from './pages/Signup';
 import Users from './pages/Users';
-
-const UnauthenticatedRoutes = () => {
-  // TODO: Set up a list of unauthenticated routes
-  // using the regular <Route> component
-};
-
-const AuthenticatedRoute = ({ children, ...rest }) => {
-  // TODO: implement the authenticated route component
-};
-
-const AdminRoute = ({ children, ...rest }) => {
-  // TODO: implement the admin route component
-};
 
 const AppRoutes = () => {
   return (
