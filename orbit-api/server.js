@@ -161,12 +161,9 @@ const requireAuth = jwt({
 });
 
 const requireAdmin = (req, res, next) => {
-  const { role } = req.user;
-  if (role !== 'admin') {
-    return res
-      .status(401)
-      .json({ message: 'Insufficient role' });
-  }
+  // TODO
+  // Check that the user has a role of admin
+  // before proceeding
   next();
 };
 
