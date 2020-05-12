@@ -26,74 +26,59 @@ import Account from './pages/Account';
 import Settings from './pages/Settings';
 import Users from './pages/Users';
 
-const UnauthenticatedRoutes = () => (
-  <Switch>
-    <Route path="/login">
-      <Login />
-    </Route>
-    <Route path="/signup">
-      <Signup />
-    </Route>
-    <Route exact path="/">
-      <Home />
-    </Route>
-    <Route path="*">
-      <FourOFour />
-    </Route>
-  </Switch>
-);
+const UnauthenticatedRoutes = () => {
+  // TODO: Set up a list of unauthenticated routes
+  // using the regular <Route> component
+};
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
-  const auth = useContext(AuthContext);
-  return (
-    <Route
-      {...rest}
-      render={() =>
-        auth.isAuthenticated() ? (
-          <AppShell>{children}</AppShell>
-        ) : (
-          <Redirect to="/" />
-        )
-      }
-    ></Route>
-  );
+  // TODO: implement the authenticated route component
 };
 
 const AdminRoute = ({ children, ...rest }) => {
-  const auth = useContext(AuthContext);
-  return (
-    <Route
-      {...rest}
-      render={() =>
-        auth.isAuthenticated() && auth.isAdmin() ? (
-          <AppShell>{children}</AppShell>
-        ) : (
-          <Redirect to="/" />
-        )
-      }
-    ></Route>
-  );
+  // TODO: implement the admin route component
 };
 
 const AppRoutes = () => {
   return (
     <Switch>
-      <AuthenticatedRoute path="/dashboard">
-        <Dashboard />
-      </AuthenticatedRoute>
-      <AdminRoute path="/inventory">
-        <Inventory />
-      </AdminRoute>
-      <AuthenticatedRoute path="/account">
-        <Account />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute path="/settings">
-        <Settings />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute path="/users">
-        <Users />
-      </AuthenticatedRoute>
-      <UnauthenticatedRoutes />
+      <Route path="/login">
+        <Login />
+      </Route>
+      <Route path="/signup">
+        <Signup />
+      </Route>
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route path="/dashboard">
+        <AppShell>
+          <Dashboard />
+        </AppShell>
+      </Route>
+      <Route path="/inventory">
+        <AppShell>
+          <Inventory />
+        </AppShell>
+      </Route>
+      <Route path="/account">
+        <AppShell>
+          <Account />
+        </AppShell>
+      </Route>
+      <Route path="/settings">
+        <AppShell>
+          <Settings />
+        </AppShell>
+      </Route>
+      <Route path="/users">
+        <AppShell>
+          <Users />
+        </AppShell>
+      </Route>
+      <Route path="*">
+        <FourOFour />
+      </Route>
     </Switch>
   );
 };
