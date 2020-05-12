@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const jwt = require('express-jwt');
 const jwtDecode = require('jwt-decode');
 const mongoose = require('mongoose');
 
@@ -156,11 +155,10 @@ const attachUser = (req, res, next) => {
 
 app.use(attachUser);
 
-const requireAuth = jwt({
-  secret: process.env.JWT_SECRET
-});
+// TODO: create a middleware for requiring auth
 
-app.get('/api/dashboard-data', requireAuth, (req, res) =>
+// TODO: apply middleware for requring auth
+app.get('/api/dashboard-data', (req, res) =>
   res.json(dashboardData)
 );
 
@@ -228,7 +226,8 @@ app.delete('/api/inventory/:id', async (req, res) => {
   }
 });
 
-app.get('/api/users', requireAuth, async (req, res) => {
+// TODO: apply middleware for requiring auth
+app.get('/api/users', async (req, res) => {
   try {
     const users = await User.find()
       .lean()
@@ -244,7 +243,8 @@ app.get('/api/users', requireAuth, async (req, res) => {
   }
 });
 
-app.get('/api/bio', requireAuth, async (req, res) => {
+// TODO: apply middleware for requiring auth
+app.get('/api/bio', async (req, res) => {
   try {
     const { sub } = req.user;
     const user = await User.findOne({
@@ -263,7 +263,8 @@ app.get('/api/bio', requireAuth, async (req, res) => {
   }
 });
 
-app.patch('/api/bio', requireAuth, async (req, res) => {
+// TODO: apply middleware for requiring auth
+app.patch('/api/bio', async (req, res) => {
   try {
     const { sub } = req.user;
     const { bio } = req.body;
