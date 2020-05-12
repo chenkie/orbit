@@ -37,6 +37,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('userInfo');
     localStorage.removeItem('expiresAt');
+    setAuthState({});
     history.push('/login');
   };
 
