@@ -19,12 +19,12 @@ const AuthProvider = ({ children }) => {
 
   const setAuthInfo = () => {
     // TODO: Set the auth info in local storage
-    // also authState
+    // and set them in authState
   };
 
   const logout = () => {
     // TODO: Remove auth items from local storage
-    // and reset auth state.
+    // and reset authState.
     // Redirect the user to the login page.
   };
 
