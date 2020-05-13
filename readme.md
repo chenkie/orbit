@@ -21,13 +21,24 @@ There are two parts to the app in this project: **orbit-app** and **orbit-api**.
 
 ## Install the Dependencies
 
-We need to install dependencies for both **orbit-app** and **orbit-api**. Change directories into each and install with **npm**.
+We need to install dependencies for both **orbit-app** and **orbit-api**. Change directories into each and install with **npm** or **yarn**.
+
+With **npm**:
 
 ```bash
 cd orbit-app
 npm install
 cd ../orbit-api
 npm install
+```
+
+With **yarn**:
+
+```bash
+cd orbit-app
+yarn
+cd ../orbit-api
+yarn
 ```
 
 ## Set Up the Environment Files
