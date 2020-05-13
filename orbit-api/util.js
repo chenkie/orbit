@@ -2,10 +2,21 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const createToken = user => {
-  // TODO: use the jsonwebtoken package
-  // to sign the JWT. Be sure to include
-  // the following claims: sub, email, role,
-  // iss, and aud.
+  // Sign the JWT
+  if (!user.role) {
+    throw new Error('No user role specified');
+  }
+  return jwt.sign(
+    {
+      sub: user._id,
+      email: user.email,
+      role: user.role,
+      iss: 'api.orbit',
+      aud: 'api.orbit'
+    },
+    process.env.JWT_SECRET,
+    { algorithm: 'HS256', expiresIn: '1h' }
+  );
 };
 
 const hashPassword = password => {
