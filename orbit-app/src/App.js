@@ -20,6 +20,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import FourOFour from './pages/FourOFour';
 
+// TODO: lazy load these routes
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Account from './pages/Account';
@@ -76,6 +77,7 @@ const AdminRoute = ({ children, ...rest }) => {
 };
 
 const AppRoutes = () => {
+  // TODO: use suspense and provide a "loading" fallback
   return (
     <Switch>
       <AuthenticatedRoute path="/dashboard">
