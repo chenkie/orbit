@@ -10,6 +10,7 @@ import GradientBar from './../components/common/GradientBar';
 import FormError from './../components/FormError';
 import FormSuccess from './../components/FormSuccess';
 import logo from './../images/logo.png';
+import publicFetch from './../util/fetch';
 
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string().required(
@@ -30,6 +31,12 @@ const Signup = () => {
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
+      const {data} = await publicFetch.post('signup', credentials);
+
+      setSignupSuccess(data.message);
+      setSignupError('');
+      // redirect 
+      console.log(data);
     } catch (error) {
       setLoginLoading(false);
       const { data } = error.response;
