@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import GradientLink from '../components/common/GradientLink';
 import GradientBar from './../components/common/GradientBar';
 import logo from './../images/logo.png';
+import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
+  const authContext = useContext(AuthContext)
   return (
     <>
       <GradientBar />
@@ -22,7 +24,9 @@ const Home = () => {
             >
               Sign Up
             </Link>
-            <GradientLink to={'/login'} text="Log In" />
+            <GradientLink to={
+              authContext.isAuthenticated() ? 'dashboard' : 'login'
+            } text="Log In" />
           </div>
         </div>
       </div>
@@ -46,7 +50,10 @@ const Home = () => {
               <GradientLink
                 text="Get Started"
                 size="lg"
-                to={'/dashboard'}
+                to={
+                  authContext.isAuthenticated() ?
+                  '/dashboard' : '/signup'
+                }
               />
             </div>
           </div>

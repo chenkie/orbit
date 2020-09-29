@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,32 +10,38 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation } from 'react-router-dom';
 import logo from './../images/logo.png';
+import { AuthContext } from '../context/AuthContext';
 
 const navItems = [
   {
     label: 'Dashboard',
     path: 'dashboard',
-    icon: faChartLine
+    icon: faChartLine,
+    allowedRoles: ['user', 'admin']
   },
   {
     label: 'Inventory',
     path: 'inventory',
-    icon: faChartPie
+    icon: faChartPie,
+    allowedRoles: ['admin']
   },
   {
     label: 'Account',
     path: 'account',
-    icon: faAddressCard
+    icon: faAddressCard,
+    allowedRoles: ['user', 'admin']
   },
   {
     label: 'Settings',
     path: 'settings',
-    icon: faCogs
+    icon: faCogs,
+    allowedRoles: ['user', 'admin']
   },
   {
     label: 'Users',
     path: 'users',
-    icon: faDoorOpen
+    icon: faDoorOpen,
+    allowedRoles: ['admin']
   }
 ];
 
@@ -67,6 +73,9 @@ const NavItemContainer = ({ children }) => (
 );
 
 const Sidebar = () => {
+  const authContext = useContext(AuthContext);
+  const { role } = authContext.authState.userInfo;
+ 
   return (
     <section className="h-screen">
       <div className="w-16 sm:w-24 m-auto">
@@ -74,9 +83,13 @@ const Sidebar = () => {
       </div>
       <div className="mt-20">
         {navItems.map((navItem, i) => (
-          <NavItemContainer key={i}>
+          <>
+          { authContext.isAdmin && navItem.allowedRoles.includes('admin') && (
+            <NavItemContainer key={i}>
             <NavItem navItem={navItem} />
           </NavItemContainer>
+          )}
+          </>
         ))}
       </div>
     </section>

@@ -66,7 +66,7 @@ const AvatarDropdown = () => {
           alt="Avatar"
         />
         <div className="px-3">
-          <p className="text-white">{authState.userInfo.firstname}</p>
+          <p className="text-white">{authState.userInfo.firstName}</p>
         </div>
         <div className="mr-1 text-white">
           <FontAwesomeIcon icon={faCaretDown} />
