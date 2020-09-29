@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Card from '../components/common/Card';
@@ -12,6 +12,7 @@ import FormSuccess from './../components/FormSuccess';
 import logo from './../images/logo.png';
 import publicFetch from './../util/fetch';
 import { Redirect } from 'react-router';
+import { AuthContext } from '../context/AuthContext';
 
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string().required(
@@ -25,6 +26,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+  const authContext = useContext(AuthContext);
   const [signupSuccess, setSignupSuccess] = useState();
   const [signupError, setSignupError] = useState();
   const [loginLoading, setLoginLoading] = useState(false);
@@ -34,13 +36,14 @@ const Signup = () => {
     try {
       setLoginLoading(true);
       const {data} = await publicFetch.post('signup', credentials);
-
+      authContext.setAuthState(data);
       setSignupSuccess(data.message);
       setSignupError('');
       // redirect to the dashboard
       setTimeout(()=> {
         setRedirectOnLogin(true);
       }, 700);
+    
       console.log(data);
     } catch (error) {
       setLoginLoading(false);

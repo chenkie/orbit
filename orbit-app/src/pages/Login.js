@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Card from '../components/common/Card';
@@ -12,6 +12,8 @@ import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
 import publicFetch from './../util/fetch';
 import { Redirect } from 'react-router';
+import { AuthContext } from '../context/AuthContext';
+
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required'),
@@ -19,6 +21,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const authContext = useContext(AuthContext);
   const [loginSuccess, setLoginSuccess] = useState();
   const [loginError, setLoginError] = useState();
   const [loginLoading, setLoginLoading] = useState(false);
@@ -28,6 +31,7 @@ const Login = () => {
     try {
       setLoginLoading(true);
       const {data} = await publicFetch.post('authenticate',credentials);
+      authContext.setAuthState(data);
       setLoginSuccess(data.message);
       setLoginError('');
       setTimeout(()=> {
