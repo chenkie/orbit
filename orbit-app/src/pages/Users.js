@@ -69,8 +69,8 @@ const Users = () => {
       <div className="flex flex-col">
         {!!users.length &&
           users.map(user => (
-            <div className="m-2">
-              <UserDetail key={user._id} user={user} />
+            <div key={user._id} className="m-2">
+              <UserDetail user={user} />
             </div>
           ))}
       </div>
