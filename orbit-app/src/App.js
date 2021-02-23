@@ -1,64 +1,92 @@
-import React from 'react';
+import React, { useContext, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
-  Switch
-} from 'react-router-dom';
-import './App.css';
-import AppShell from './AppShell';
-import { AuthProvider } from './context/AuthContext';
-import { FetchProvider } from './context/FetchContext';
-import Account from './pages/Account';
-import Dashboard from './pages/Dashboard';
-import FourOFour from './pages/FourOFour';
-import Home from './pages/Home';
-import Inventory from './pages/Inventory';
-import Login from './pages/Login';
-import Settings from './pages/Settings';
-import Signup from './pages/Signup';
-import Users from './pages/Users';
+  Switch,
+} from "react-router-dom";
+import "./App.css";
+import AppShell from "./AppShell";
+import { AuthContext, AuthProvider } from "./context/AuthContext";
+import { FetchProvider } from "./context/FetchContext";
+import FourOFour from "./pages/FourOFour";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Inventory = lazy(() => import("./pages/Inventory"));
+const Account = lazy(() => import("./pages/Account"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Users = lazy(() => import("./pages/Users"));
+
+const AuthenticatedRoute = ({ children, ...rest }) => {
+  const authContext = useContext(AuthContext);
+
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        authContext.isAuthenticated() ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
+
+const AdminRoute = ({ children, ...rest }) => {
+  const authContext = useContext(AuthContext);
+
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        authContext.isAuthenticated() && authContext.isAdmin() ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
 
 const AppRoutes = () => {
   return (
-    <Switch>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route path="/signup">
-        <Signup />
-      </Route>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route path="/dashboard">
-        <AppShell>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/signup">
+          <Signup />
+        </Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <AuthenticatedRoute path="/dashboard">
           <Dashboard />
-        </AppShell>
-      </Route>
-      <Route path="/inventory">
-        <AppShell>
+        </AuthenticatedRoute>
+        <AdminRoute path="/inventory">
           <Inventory />
-        </AppShell>
-      </Route>
-      <Route path="/account">
-        <AppShell>
+        </AdminRoute>
+        <AuthenticatedRoute path="/account">
           <Account />
-        </AppShell>
-      </Route>
-      <Route path="/settings">
-        <AppShell>
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/settings">
           <Settings />
-        </AppShell>
-      </Route>
-      <Route path="/users">
-        <AppShell>
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/users">
           <Users />
-        </AppShell>
-      </Route>
-      <Route path="*">
-        <FourOFour />
-      </Route>
-    </Switch>
+        </AuthenticatedRoute>
+        <Route path="*">
+          <FourOFour />
+        </Route>
+      </Switch>
+    </Suspense>
   );
 };
 

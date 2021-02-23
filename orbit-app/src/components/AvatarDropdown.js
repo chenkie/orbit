@@ -1,22 +1,11 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
-import {
-  faCaretDown,
-  faSignOutAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AuthContext } from './../context/AuthContext';
-import defaultAvatar from './../images/defaultAvatar.png';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { faCaretDown, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AuthContext } from "./../context/AuthContext";
+import defaultAvatar from "./../images/defaultAvatar.png";
 
 const DropdownItem = ({ item }) => (
-  <button
-    className="text-gray-700 flex items-center"
-    onClick={item.onClick}
-  >
+  <button className="text-gray-700 flex items-center" onClick={item.onClick}>
     <FontAwesomeIcon icon={item.icon} />
     <p className="ml-2">{item.title}</p>
   </button>
@@ -44,26 +33,23 @@ const AvatarDropdown = () => {
 
   const dropdownItems = [
     {
-      title: 'Log Out',
+      title: "Log Out",
       icon: faSignOutAlt,
-      onClick: auth.logout
-    }
+      onClick: auth.logout,
+    },
   ];
 
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (!node.current.contains(e.target)) {
       setDropdownOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClick);
 
     return () => {
-      document.removeEventListener(
-        'mousedown',
-        handleClick
-      );
+      document.removeEventListener("mousedown", handleClick);
     };
   }, []);
 
@@ -80,7 +66,7 @@ const AvatarDropdown = () => {
           alt="Avatar"
         />
         <div className="px-3">
-          <p className="text-white">Ryan</p>
+          <p className="text-white">{authState.userInfo.firstName}</p>
         </div>
         <div className="mr-1 text-white">
           <FontAwesomeIcon icon={faCaretDown} />

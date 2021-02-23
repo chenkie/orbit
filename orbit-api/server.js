@@ -1,44 +1,45 @@
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const jwtDecode = require('jwt-decode');
-const mongoose = require('mongoose');
+require("dotenv").config();
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const jwtDecode = require("jwt-decode");
+const mongoose = require("mongoose");
+const jwt = require("express-jwt");
 
-const dashboardData = require('./data/dashboard');
-const User = require('./data/User');
-const InventoryItem = require('./data/InventoryItem');
+const dashboardData = require("./data/dashboard");
+const User = require("./data/User");
+const InventoryItem = require("./data/InventoryItem");
+const cookieParser = require("cookie-parser");
+const csurf = require("csurf");
 
-const {
-  createToken,
-  hashPassword,
-  verifyPassword
-} = require('./util');
+const csurfProtection = csurf({
+  cookie: true,
+});
+
+const { createToken, hashPassword, verifyPassword } = require("./util");
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-app.post('/api/authenticate', async (req, res) => {
+app.post("/api/authenticate", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({
-      email
+      email,
     }).lean();
 
     if (!user) {
       return res.status(403).json({
-        message: 'Wrong email or password.'
+        message: "Wrong email or password.",
       });
     }
 
-    const passwordValid = await verifyPassword(
-      password,
-      user.password
-    );
+    const passwordValid = await verifyPassword(password, user.password);
 
     if (passwordValid) {
       const { password, bio, ...rest } = user;
@@ -49,49 +50,47 @@ app.post('/api/authenticate', async (req, res) => {
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
 
+      res.cookie("token", token, {
+        httpOnly: true,
+      });
+
       res.json({
-        message: 'Authentication successful!',
+        message: "Authentication successful!",
         token,
         userInfo,
-        expiresAt
+        expiresAt,
       });
     } else {
       res.status(403).json({
-        message: 'Wrong email or password.'
+        message: "Wrong email or password.",
       });
     }
   } catch (err) {
     console.log(err);
-    return res
-      .status(400)
-      .json({ message: 'Something went wrong.' });
+    return res.status(400).json({ message: "Something went wrong." });
   }
 });
 
-app.post('/api/signup', async (req, res) => {
+app.post("/api/signup", async (req, res) => {
   try {
     const { email, firstName, lastName } = req.body;
 
-    const hashedPassword = await hashPassword(
-      req.body.password
-    );
+    const hashedPassword = await hashPassword(req.body.password);
 
     const userData = {
       email: email.toLowerCase(),
       firstName,
       lastName,
       password: hashedPassword,
-      role: 'admin'
+      role: "admin",
     };
 
     const existingEmail = await User.findOne({
-      email: userData.email
+      email: userData.email,
     }).lean();
 
     if (existingEmail) {
-      return res
-        .status(400)
-        .json({ message: 'Email already exists' });
+      return res.status(400).json({ message: "Email already exists" });
     }
 
     const newUser = new User(userData);
@@ -102,164 +101,206 @@ app.post('/api/signup', async (req, res) => {
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
 
-      const {
-        firstName,
-        lastName,
-        email,
-        role
-      } = savedUser;
+      const { firstName, lastName, email, role } = savedUser;
 
       const userInfo = {
         firstName,
         lastName,
         email,
-        role
+        role,
       };
 
+      res.cookie("token", token, {
+        httpOnly: true,
+      });
+
       return res.json({
-        message: 'User created!',
+        message: "User created!",
         token,
         userInfo,
-        expiresAt
+        expiresAt,
       });
     } else {
       return res.status(400).json({
-        message: 'There was a problem creating your account'
+        message: "There was a problem creating your account",
       });
     }
   } catch (err) {
     return res.status(400).json({
-      message: 'There was a problem creating your account'
+      message: "There was a problem creating your account",
     });
   }
 });
 
-app.get('/api/dashboard-data', (req, res) =>
-  res.json(dashboardData)
-);
+const attachUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token)
+    return res.status(401).json({ message: "Authentication invalid" });
 
-app.patch('/api/user-role', async (req, res) => {
+  const decodedToken = jwtDecode(token);
+  if (!decodedToken) {
+    return res
+      .status(401)
+      .json({ message: "There was a problem authorization" });
+  } else {
+    req.user = decodedToken;
+    next();
+  }
+};
+
+app.use(attachUser);
+
+const checkJWT = jwt({
+  secret: process.env.JWT_SECRET,
+  issuer: "api.orbit",
+  audience: "api.orbit",
+  getToken: (req) => req.cookies.token,
+});
+
+app.use(csurfProtection);
+
+app.get("/api/csurf-token", (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
+
+const requiredAdmin = (req, res, next) => {
+  const { role } = req.user;
+  if (role !== "admin") {
+    return res.status(401).json({ message: "Insufficient role" });
+  }
+  next();
+};
+
+app.get("/api/dashboard-data", checkJWT, (req, res) => {
+  return res.json(dashboardData);
+});
+
+app.patch("/api/user-role", async (req, res) => {
   try {
     const { role } = req.body;
-    const allowedRoles = ['user', 'admin'];
+    const allowedRoles = ["user", "admin"];
 
     if (!allowedRoles.includes(role)) {
-      return res
-        .status(400)
-        .json({ message: 'Role not allowed' });
+      return res.status(400).json({ message: "Role not allowed" });
     }
-    await User.findOneAndUpdate(
-      { _id: req.user.sub },
-      { role }
-    );
+    await User.findOneAndUpdate({ _id: req.user.sub }, { role });
     res.json({
       message:
-        'User role updated. You must log in again for the changes to take effect.'
+        "User role updated. You must log in again for the changes to take effect.",
     });
   } catch (err) {
     return res.status(400).json({ error: err });
   }
 });
 
-app.get('/api/inventory', async (req, res) => {
+app.get("/api/inventory", checkJWT, requiredAdmin, async (req, res) => {
   try {
-    const inventoryItems = await InventoryItem.find();
+    const { sub } = req.user;
+    const inventoryItems = await InventoryItem.find({
+      user: sub,
+    });
     res.json(inventoryItems);
   } catch (err) {
     return res.status(400).json({ error: err });
   }
 });
 
-app.post('/api/inventory', async (req, res) => {
+app.post("/api/inventory", checkJWT, requiredAdmin, async (req, res) => {
   try {
-    const inventoryItem = new InventoryItem(req.body);
+    const { sub } = req.user;
+    const input = Object.assign({}, req.body, {
+      user: sub,
+    });
+    const inventoryItem = new InventoryItem(input);
     await inventoryItem.save();
     res.status(201).json({
-      message: 'Inventory item created!',
-      inventoryItem
+      message: "Inventory item created!",
+      inventoryItem,
     });
   } catch (err) {
     console.log(err);
     return res.status(400).json({
-      message: 'There was a problem creating the item'
+      message: "There was a problem creating the item",
     });
   }
 });
 
-app.delete('/api/inventory/:id', async (req, res) => {
+app.delete("/api/inventory/:id", checkJWT, requiredAdmin, async (req, res) => {
   try {
-    const deletedItem = await InventoryItem.findOneAndDelete(
-      { _id: req.params.id }
-    );
+    const { sub } = req.user;
+    const deletedItem = await InventoryItem.findOneAndDelete({
+      _id: req.params.id,
+      user: sub,
+    });
     res.status(201).json({
-      message: 'Inventory item deleted!',
-      deletedItem
+      message: "Inventory item deleted!",
+      deletedItem,
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'There was a problem deleting the item.'
+      message: "There was a problem deleting the item.",
     });
   }
 });
 
-app.get('/api/users', async (req, res) => {
+app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find()
       .lean()
-      .select('_id firstName lastName avatar bio');
+      .select("_id firstName lastName avatar bio");
 
     res.json({
-      users
+      users,
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'There was a problem getting the users'
+      message: "There was a problem getting the users",
     });
   }
 });
 
-app.get('/api/bio', async (req, res) => {
+app.get("/api/bio", async (req, res) => {
   try {
     const { sub } = req.user;
     const user = await User.findOne({
-      _id: sub
+      _id: sub,
     })
       .lean()
-      .select('bio');
+      .select("bio");
 
     res.json({
-      bio: user.bio
+      bio: user.bio,
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'There was a problem updating your bio'
+      message: "There was a problem updating your bio",
     });
   }
 });
 
-app.patch('/api/bio', async (req, res) => {
+app.patch("/api/bio", async (req, res) => {
   try {
     const { sub } = req.user;
     const { bio } = req.body;
     const updatedUser = await User.findOneAndUpdate(
       {
-        _id: sub
+        _id: sub,
       },
       {
-        bio
+        bio,
       },
       {
-        new: true
+        new: true,
       }
     );
 
     res.json({
-      message: 'Bio updated!',
-      bio: updatedUser.bio
+      message: "Bio updated!",
+      bio: updatedUser.bio,
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'There was a problem updating your bio'
+      message: "There was a problem updating your bio",
     });
   }
 });
@@ -270,13 +311,13 @@ async function connect() {
     await mongoose.connect(process.env.ATLAS_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: false
+      useFindAndModify: false,
     });
   } catch (err) {
-    console.log('Mongoose error', err);
+    console.log("Mongoose error", err);
   }
   app.listen(3001);
-  console.log('API listening on localhost:3001');
+  console.log("API listening on localhost:3001");
 }
 
 connect();
