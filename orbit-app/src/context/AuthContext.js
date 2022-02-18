@@ -1,11 +1,11 @@
 import React, { createContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 const { Provider } = AuthContext;
 
 const AuthProvider = ({ children }) => {
-  const history = useHistory();
+  const history = useNavigate();
 
   const token = localStorage.getItem('token');
   const userInfo = localStorage.getItem('userInfo');
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('userInfo');
     localStorage.removeItem('expiresAt');
     setAuthState({});
-    history.push('/login');
+    history('/login');
   };
 
   const isAuthenticated = () => {

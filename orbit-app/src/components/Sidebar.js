@@ -15,31 +15,31 @@ import { AuthContext } from './../context/AuthContext';
 const navItems = [
   {
     label: 'Dashboard',
-    path: 'dashboard',
+    path: '/dashboard',
     icon: faChartLine,
     allowedRoles: ['user', 'admin']
   },
   {
     label: 'Inventory',
-    path: 'inventory',
+    path: '/inventory',
     icon: faChartPie,
     allowedRoles: ['admin']
   },
   {
     label: 'Account',
-    path: 'account',
+    path: '/account',
     icon: faAddressCard,
     allowedRoles: ['user', 'admin']
   },
   {
     label: 'Settings',
-    path: 'settings',
+    path: '/settings',
     icon: faCogs,
     allowedRoles: ['user', 'admin']
   },
   {
     label: 'Users',
-    path: 'users',
+    path: '/users',
     icon: faDoorOpen,
     allowedRoles: ['admin']
   }

@@ -1,30 +1,27 @@
-import React, { lazy, Suspense, useContext } from 'react';
+import React, { lazy, Suspense, useContext } from "react";
 import {
   BrowserRouter as Router,
   Route,
-  Switch,
-  Redirect
-} from 'react-router-dom';
-import './App.css';
+  Routes,
+  Navigate
+} from "react-router-dom";
+import "./App.css";
 
-import {
-  AuthProvider,
-  AuthContext
-} from './context/AuthContext';
-import { FetchProvider } from './context/FetchContext';
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { FetchProvider } from "./context/FetchContext";
 
-import AppShell from './AppShell';
+import AppShell from "./AppShell";
 
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import FourOFour from './pages/FourOFour';
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import FourOFour from "./pages/FourOFour";
 
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Inventory = lazy(() => import('./pages/Inventory'));
-const Account = lazy(() => import('./pages/Account'));
-const Settings = lazy(() => import('./pages/Settings'));
-const Users = lazy(() => import('./pages/Users'));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Inventory = lazy(() => import("./pages/Inventory"));
+const Account = lazy(() => import("./pages/Account"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Users = lazy(() => import("./pages/Users"));
 
 const LoadingFallback = () => (
   <AppShell>
@@ -32,52 +29,21 @@ const LoadingFallback = () => (
   </AppShell>
 );
 
-const UnauthenticatedRoutes = () => (
-  <Switch>
-    <Route path="/login">
-      <Login />
-    </Route>
-    <Route path="/signup">
-      <Signup />
-    </Route>
-    <Route exact path="/">
-      <Home />
-    </Route>
-    <Route path="*">
-      <FourOFour />
-    </Route>
-  </Switch>
-);
-
-const AuthenticatedRoute = ({ children, ...rest }) => {
+const AuthenticatedRoute = ({ children }) => {
   const auth = useContext(AuthContext);
-  return (
-    <Route
-      {...rest}
-      render={() =>
-        auth.isAuthenticated() ? (
-          <AppShell>{children}</AppShell>
-        ) : (
-          <Redirect to="/" />
-        )
-      }
-    ></Route>
+  return auth.isAuthenticated() ? (
+    <AppShell>{children}</AppShell>
+  ) : (
+    <Navigate to="/" />
   );
 };
 
-const AdminRoute = ({ children, ...rest }) => {
+const AdminRoute = ({ children }) => {
   const auth = useContext(AuthContext);
-  return (
-    <Route
-      {...rest}
-      render={() =>
-        auth.isAuthenticated() && auth.isAdmin() ? (
-          <AppShell>{children}</AppShell>
-        ) : (
-          <Redirect to="/" />
-        )
-      }
-    ></Route>
+  return auth.isAuthenticated() && auth.isAdmin() ? (
+    <AppShell>{children}</AppShell>
+  ) : (
+    <Navigate to="/" />
   );
 };
 
@@ -85,24 +51,53 @@ const AppRoutes = () => {
   return (
     <>
       <Suspense fallback={<LoadingFallback />}>
-        <Switch>
-          <AuthenticatedRoute path="/dashboard">
-            <Dashboard />
-          </AuthenticatedRoute>
-          <AdminRoute path="/inventory">
-            <Inventory />
-          </AdminRoute>
-          <AuthenticatedRoute path="/account">
-            <Account />
-          </AuthenticatedRoute>
-          <AuthenticatedRoute path="/settings">
-            <Settings />
-          </AuthenticatedRoute>
-          <AuthenticatedRoute path="/users">
-            <Users />
-          </AuthenticatedRoute>
-          <UnauthenticatedRoutes />
-        </Switch>
+        <Routes>
+          <Route
+            path="/dashboard"
+            element={
+              <AuthenticatedRoute>
+                <Dashboard />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <AdminRoute>
+                <Inventory />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <AuthenticatedRoute>
+                <Account />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <AuthenticatedRoute>
+                <Settings />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <AuthenticatedRoute>
+                <Users />
+              </AuthenticatedRoute>
+            }
+          />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" exact element={<Home />} />
+          <Route path="*" element={<FourOFour />} />
+        </Routes>
       </Suspense>
     </>
   );

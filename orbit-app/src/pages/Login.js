@@ -10,7 +10,7 @@ import FormError from './../components/FormError';
 import GradientBar from './../components/common/GradientBar';
 import { AuthContext } from '../context/AuthContext';
 import { publicFetch } from './../util/fetch';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
 
@@ -23,7 +23,7 @@ const Login = () => {
   const authContext = useContext(AuthContext);
   const [loginSuccess, setLoginSuccess] = useState();
   const [loginError, setLoginError] = useState();
-  const [redirectOnLogin, setRedirectOnLogin] = useState(
+  const [redirectOnLogin, setNavigateOnLogin] = useState(
     false
   );
   const [loginLoading, setLoginLoading] = useState(false);
@@ -41,7 +41,7 @@ const Login = () => {
       setLoginError(null);
 
       setTimeout(() => {
-        setRedirectOnLogin(true);
+        setNavigateOnLogin(true);
       }, 700);
     } catch (error) {
       setLoginLoading(false);
@@ -53,7 +53,7 @@ const Login = () => {
 
   return (
     <>
-      {redirectOnLogin && <Redirect to="/dashboard" />}
+      {redirectOnLogin && <Navigate to="/dashboard" />}
       <section className="w-full sm:w-1/2 h-screen m-auto p-8 sm:pt-10">
         <GradientBar />
         <Card>
