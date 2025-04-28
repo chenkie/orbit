@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Card from '../components/common/Card';
-import Hyperlink from './../components/common/Hyperlink';
+import Hyperlink from './../components/common/Hyperlink.jsx';
 import Label from './../components/common/Label';
 import FormInput from './../components/FormInput';
 import FormSuccess from './../components/FormSuccess';
@@ -49,7 +49,7 @@ const Login = () => {
                 <p className="text-gray-600 text-center">
                   Don't have an account?{' '}
                   <Hyperlink
-                    to="signup"
+                    to="/signup"
                     text="Sign up now"
                   />
                 </p>
