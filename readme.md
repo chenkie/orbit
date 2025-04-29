@@ -89,7 +89,7 @@ If you prefer not to use Docker, you can use your own MongoDB instance (local or
 
 The Node API will be running at `http://localhost:3001`.
 
-Navigate to `http://localhost:5173` to see the app running!
+Navigate to `http://localhost:3000` to see the app running!
 
 ## License
 
