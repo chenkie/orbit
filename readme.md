@@ -1,3 +1,4 @@
+# Updated Starter Code
 # ReactSecurity - Orbit
 
 <p>
@@ -42,21 +43,49 @@ For `JWT_SECRET`, provide a long, strong, unguessable secret, much like you woul
 
 ## Run the Applications
 
-The React app is built with **create-react-app**. Run it with the script provided in its **package.json** file.
+### Option 1: Using Docker for MongoDB (Recommended for Local Development)
 
-```bash
-cd orbit-app
-npm start
-```
+If you have Docker and Docker Compose installed, you can easily run the required MongoDB instance locally.
 
-The Node API comes with a script in its `package.json` which allows you to run it in development mode with **nodemon**.
+1.  **Start the MongoDB container:** In the root directory of the project, run:
 
-Open a new terminal window, change directories into the API, and start it up.
+    ```bash
+    docker compose up -d
+    ```
 
-```bash
-cd orbit-api
-npm run dev
-```
+    This will start a MongoDB container in the background, using the configuration defined in `docker-compose.yaml`. The database will be accessible on `localhost:27019`. Ensure your `.env` file in `orbit-api` uses this connection string: `mongodb://user:pass@localhost:27019/?directConnection=true`.
+
+2.  **Run the React App:**
+
+    ```bash
+    cd orbit-app
+    npm start
+    ```
+
+3.  **Run the Node API:** Open a new terminal window.
+    ```bash
+    cd orbit-api
+    npm run dev
+    ```
+
+### Option 2: Using Your Own MongoDB Instance
+
+If you prefer not to use Docker, you can use your own MongoDB instance (local or cloud-based like Atlas).
+
+1.  **Ensure MongoDB is running:** Make sure your MongoDB instance is running and accessible.
+2.  **Update API Environment:** Update the `ATLAS_URL` in the `orbit-api/.env` file with the correct connection string for your MongoDB instance.
+3.  **Run the React App:**
+    ```bash
+    cd orbit-app
+    npm start
+    ```
+4.  **Run the Node API:** Open a new terminal window.
+    ```bash
+    cd orbit-api
+    npm run dev
+    ```
+
+---
 
 The Node API will be running at `http://localhost:3001`.
 

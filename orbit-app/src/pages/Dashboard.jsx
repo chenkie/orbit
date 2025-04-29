@@ -1,19 +1,15 @@
-import React, {
-  useState,
-  useContext,
-  useEffect
-} from 'react';
-import PageTitle from '../components/common/PageTitle';
-import DashboardMetric from './../components/DashboardMetric';
-import Card from '../components/common/Card';
+import React, { useState, useContext, useEffect } from "react";
+import PageTitle from "../components/common/PageTitle";
+import DashboardMetric from "./../components/DashboardMetric";
+import Card from "../components/common/Card";
 import {
   faChartArea,
   faDollarSign,
-  faUserPlus
-} from '@fortawesome/free-solid-svg-icons';
-import { FetchContext } from '../context/FetchContext';
-import { formatCurrency } from './../util';
-import DashboardChart from './../components/DashboardChart';
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { FetchContext } from "../context/FetchContext";
+import { formatCurrency } from "./../util";
+import DashboardChart from "./../components/DashboardChart";
 
 const Dashboard = () => {
   const fetchContext = useContext(FetchContext);
@@ -22,9 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getDashboardData = async () => {
       try {
-        const { data } = await fetchContext.authAxios.get(
-          'dashboard-data'
-        );
+        const { data } = await fetchContext.authAxios.get("dashboard-data");
         setDashboardData(data);
       } catch (err) {
         console.log(err);
@@ -43,9 +37,7 @@ const Dashboard = () => {
             <div className="w-full sm:w-1/3 sm:mr-2 mb-4 sm:mb-0">
               <DashboardMetric
                 title="Sales Volume"
-                value={formatCurrency(
-                  dashboardData.salesVolume
-                )}
+                value={formatCurrency(dashboardData.salesVolume)}
                 icon={faChartArea}
               />
             </div>
@@ -59,19 +51,18 @@ const Dashboard = () => {
             <div className="w-full sm:w-1/3 sm:ml-2 mb-4 sm:mb-0">
               <DashboardMetric
                 title="Refunds"
-                value={formatCurrency(
-                  dashboardData.refunds
-                )}
+                value={formatCurrency(dashboardData.refunds)}
                 icon={faDollarSign}
               />
             </div>
           </div>
           <div className="w-full mt-4">
             <Card>
-              {dashboardData && (
-                <DashboardChart
-                  salesData={dashboardData.graphData}
-                />
+              {/* Check if graphData exists before rendering the chart */}
+              {dashboardData && dashboardData.graphData ? (
+                <DashboardChart salesData={dashboardData.graphData} />
+              ) : (
+                <p>Chart data loading or unavailable...</p> // Display a message if data is missing
               )}
             </Card>
           </div>
